@@ -14,6 +14,7 @@ import { CurrentTrainingsComponent } from './training/current-trainings/current-
 import { NewTrainingsComponent } from './training/new-trainings/new-trainings.component';
 import { PastTrainingsComponent } from './training/past-trainings/past-trainings.component';
 import { SignupComponent } from './auth/signup/signup.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { SignupComponent } from './auth/signup/signup.component';
     BrowserAnimationsModule,
     MaterialModule,
     AppRoutingModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
