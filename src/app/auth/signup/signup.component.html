@@ -1,23 +1,29 @@
 <section class="signup-form">
-  <form fxLayout="column" fxLayoutAlign="center center" #f="ngForm" (submit)="onSubmit(f)" fxLayoutGap="10px">
-    <mat-form-field>
-      <input matInput type="email" placeholder="email" ngModel name="email" #emailInput="ngModel" required>
+  <form fxLayout="column" fxLayoutAlign="center center" #f="ngForm" (submit)="onSubmit(f)" fxLayoutGap="10px" class="signup-form">
+    <mat-form-field class="mat-fields">
+      <input matInput 
+        type="email" 
+        placeholder="Your email" 
+        ngModel name="email" 
+        #emailInput="ngModel" required email>
       <mat-error *ngIf="emailInput.hasError('required')">Email must not be empty</mat-error>
       <mat-error *ngIf="!emailInput.hasError('required')">Email must be valid</mat-error>
     </mat-form-field>
 
-    <mat-form-field>
-      <input matInput type="password" placeholder="password" ngModel name="password" #passwordInput="ngModel" required
+    <mat-form-field class="mat-fields">
+      <input matInput type="password" placeholder="Your password" ngModel name="password" #passwordInput="ngModel" required
         minlength="6">
       <mat-hint align="end">{{passwordInput.value?.length}}/6</mat-hint>
-      <mat-error *ngIf="passwordInput.value.length < 6">Password cannot be less than 6 characters</mat-error>
+      <mat-error>Password cannot be less than 6 characters</mat-error>
     </mat-form-field>
 
-    <mat-form-field>
-      <input matInput [matDatepicker]="picker" placeholder="Choose a date" name="birthDate" ngModel>
+    <mat-form-field class="mat-fields">
+      <input matInput [matDatepicker]="picker" placeholder="Your date of birth" name="birthDate" ngModel>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+
+    <mat-checkbox ngModel name="terms" required>Agree to the terms and conditions.</mat-checkbox>
 
     <button mat-raised-button type="submit" color="primary" [disabled]="f.invalid">Submit</button>
   </form>
