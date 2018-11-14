@@ -1,0 +1,16 @@
+mat-sidenav-container, mat-sidenav-content, mat-sidenav {
+    height: 100%;
+}
+
+mat-sidenav {
+    widows: 250px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar-icon {
+    padding: 10px;
+}

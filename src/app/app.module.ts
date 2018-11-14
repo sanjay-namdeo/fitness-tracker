@@ -10,21 +10,23 @@ import { MaterialModule } from './material.module';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './auth/login/login.component';
-import { CurrentTrainingsComponent } from './training/current-trainings/current-trainings.component';
-import { NewTrainingsComponent } from './training/new-trainings/new-trainings.component';
-import { PastTrainingsComponent } from './training/past-trainings/past-trainings.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { FormsModule } from '@angular/forms';
+import { TrainingComponent } from './training/training.component';
+import { CurrentTrainingComponent } from './training/current-training/current-training.component';
+import { NewTrainingComponent } from './training/new-training/new-training.component';
+import { PastTrainingComponent } from './training/past-training/past-training.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     WelcomeComponent,
     LoginComponent,
-    CurrentTrainingsComponent,
-    NewTrainingsComponent,
-    PastTrainingsComponent,
-    SignupComponent
+    SignupComponent,
+    TrainingComponent,
+    CurrentTrainingComponent,
+    NewTrainingComponent,
+    PastTrainingComponent
   ],
   imports: [
     BrowserModule,
