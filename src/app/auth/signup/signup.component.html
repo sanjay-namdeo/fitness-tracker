@@ -1,23 +1,23 @@
 <section class="signup-form">
   <form fxLayout="column" fxLayoutAlign="center center" #f="ngForm" (submit)="onSubmit(f)" fxLayoutGap="10px" class="signup-form">
-    <mat-form-field class="mat-fields">
-      <input matInput 
-        type="email" 
-        placeholder="Your email" 
-        ngModel name="email" 
+    <mat-form-field class="mat-fields" hintLabel="Your email">
+      <input matInput
+        type="email"
+        placeholder="Your email"
+        ngModel name="email"
         #emailInput="ngModel" required email>
       <mat-error *ngIf="emailInput.hasError('required')">Email must not be empty</mat-error>
       <mat-error *ngIf="!emailInput.hasError('required')">Email must be valid</mat-error>
     </mat-form-field>
 
-    <mat-form-field class="mat-fields">
+    <mat-form-field class="mat-fields" hintLabel="Your password">
       <input matInput type="password" placeholder="Your password" ngModel name="password" #passwordInput="ngModel" required
         minlength="6">
-      <mat-hint align="end">{{passwordInput.value?.length}}/6</mat-hint>
+      <mat-hint align="end">Length {{passwordInput.value?.length}}/6</mat-hint>
       <mat-error>Password cannot be less than 6 characters</mat-error>
     </mat-form-field>
 
-    <mat-form-field class="mat-fields">
+    <mat-form-field class="mat-fields" hintLabel="Your date of birth">
       <input matInput [matDatepicker]="picker" placeholder="Your date of birth" name="birthDate" ngModel>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
