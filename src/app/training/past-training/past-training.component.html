@@ -1,3 +1,9 @@
+<div fxLayoutAlign="center center">
+  <mat-form-field fxFlex="40%">
+    <input type="text" matInput placeholder="Filter" width="40%" (keyup)="doFilter($event.target.value)">
+  </mat-form-field>
+</div>
+
 <table mat-table [dataSource]="dataSource" width="100%" matSort>
 
   <ng-container matColumnDef="name">
