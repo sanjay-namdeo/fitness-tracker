@@ -21,26 +21,37 @@ export class TrainingService {
   }
 
   startExercise(exerciseId: string) {
-    this.ongoingExercise = this.availableExercises.find(ex => ex.id === exerciseId);
+    this.ongoingExercise = this.availableExercises.find(
+      ex => ex.id === exerciseId
+    );
     this.exerciseChanged.next(this.ongoingExercise);
   }
 
   completeTraining() {
-    this.exercises.push(
-      { ...this.ongoingExercise, date: new Date(), state: 'completed' }
-    );
+    this.exercises.push({
+      ...this.ongoingExercise,
+      date: new Date(),
+      state: 'completed',
+      duration: this.ongoingExercise.duration,
+      calories: this.ongoingExercise.calories
+    });
     this.ongoingExercise = null;
     this.exerciseChanged.next(null);
   }
 
   cancelTraining(progress: number) {
-    this.exercises.push(
-      { ...this.ongoingExercise, date: new Date(), state: 'cancelled',
-        duration: this.ongoingExercise.duration * (progress / 100),
-        calories: this.ongoingExercise.duration * (progress / 100)
-      }
-    );
+    this.exercises.push({
+      ...this.ongoingExercise,
+      date: new Date(),
+      state: 'cancelled',
+      duration: this.ongoingExercise.duration * (progress / 100),
+      calories: this.ongoingExercise.calories * (progress / 100)
+    });
     this.ongoingExercise = null;
     this.exerciseChanged.next(null);
+  }
+
+  getCompletedOrCancelledTrainings() {
+    return this.exercises.slice();
   }
 }
