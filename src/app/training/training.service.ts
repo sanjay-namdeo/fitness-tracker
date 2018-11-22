@@ -73,17 +73,7 @@ export class TrainingService {
   fetchPastTrainingsFromDB() {
     this.db
       .collection('pastTrainings')
-      .snapshotChanges()
-      .pipe(
-        map(resultArray => {
-          return resultArray.map(doc => {
-            return {
-              id: doc.payload.doc.id,
-              ...doc.payload.doc.data()
-            };
-          });
-        })
-      )
+      .valueChanges()
       .subscribe((result: Exercise[]) => {
         this.pastTrainingsChanged.next(result);
       });
