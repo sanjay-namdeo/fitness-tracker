@@ -1,19 +1,38 @@
+import { AngularFirestore } from '@angular/fire/firestore';
 import { Subject } from 'rxjs';
 import { Exercise } from './exercise.model';
+import { map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class TrainingService {
   exerciseChanged = new Subject<Exercise>();
+  availableExercisesChanged = new Subject<Exercise[]>();
+  pastTrainingsChanged = new Subject<Exercise[]>();
+
   private ongoingExercise: Exercise;
-  private availableExercises: Exercise[] = [
-    { id: 'crunches', name: 'Crunches', duration: 30, calories: 8 },
-    { id: 'touch-toes', name: 'Touch Toes', duration: 180, calories: 15 },
-    { id: 'side-lunges', name: 'Side Lunges', duration: 120, calories: 18 },
-    { id: 'burpees', name: 'Burpees', duration: 60, calories: 8 }
-  ];
-  private exercises: Exercise[] = [];
+  private availableExercises: Exercise[] = [];
+
+  constructor(private db: AngularFirestore) {}
 
   getAvailableTrainings() {
-    return this.availableExercises.slice();
+    this.db
+      .collection('availableExercises')
+      .snapshotChanges()
+      .pipe(
+        map(resultArray => {
+          return resultArray.map(doc => {
+            return {
+              id: doc.payload.doc.id,
+              ...doc.payload.doc.data()
+            };
+          });
+        })
+      )
+      .subscribe((result: Exercise[]) => {
+        this.availableExercises = result;
+        this.availableExercisesChanged.next(result);
+      });
   }
 
   getOngoingExercise() {
@@ -28,7 +47,7 @@ export class TrainingService {
   }
 
   completeTraining() {
-    this.exercises.push({
+    this.addTrainingsToDB({
       ...this.ongoingExercise,
       date: new Date(),
       state: 'completed',
@@ -40,7 +59,7 @@ export class TrainingService {
   }
 
   cancelTraining(progress: number) {
-    this.exercises.push({
+    this.addTrainingsToDB({
       ...this.ongoingExercise,
       date: new Date(),
       state: 'cancelled',
@@ -51,7 +70,26 @@ export class TrainingService {
     this.exerciseChanged.next(null);
   }
 
-  getCompletedOrCancelledTrainings() {
-    return this.exercises.slice();
+  fetchPastTrainingsFromDB() {
+    this.db
+      .collection('pastTrainings')
+      .snapshotChanges()
+      .pipe(
+        map(resultArray => {
+          return resultArray.map(doc => {
+            return {
+              id: doc.payload.doc.id,
+              ...doc.payload.doc.data()
+            };
+          });
+        })
+      )
+      .subscribe((result: Exercise[]) => {
+        this.pastTrainingsChanged.next(result);
+      });
+  }
+
+  addTrainingsToDB(exercise: Exercise) {
+    this.db.collection('pastTrainings').add(exercise);
   }
 }
