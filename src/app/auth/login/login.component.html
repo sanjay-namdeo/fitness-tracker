@@ -1,24 +1,55 @@
 <section class="login-form">
-  <form #f="ngForm" (submit)="onSubmit(f)" fxLayout="column" fxLayoutAlign="center center">
+  <form
+    #f="ngForm"
+    (submit)="onSubmit(f)"
+    fxLayout="column"
+    fxLayoutAlign="center center"
+  >
     <mat-form-field class="mat-fields">
-      <input type="email" name="email" placeholder="Your email"
-      matInput ngModel email required
-      #emailInput="ngModel">
+      <input
+        type="email"
+        name="email"
+        placeholder="Your email"
+        matInput
+        ngModel
+        email
+        required
+        #emailInput="ngModel"
+      />
       <mat-hint>Please enter your email</mat-hint>
-      <mat-error *ngIf="emailInput.hasError('required')">Email is required</mat-error>
-      <mat-error *ngIf="!emailInput.hasError('required')">Email must be valid</mat-error>
+      <mat-error *ngIf="emailInput.hasError('required')"
+        >Email is required</mat-error
+      >
+      <mat-error *ngIf="!emailInput.hasError('required')"
+        >Email must be valid</mat-error
+      >
     </mat-form-field>
 
     <mat-form-field class="mat-fields" hintLabel="Please enter your password">
-      <input type="password" name="password" placeholder="Your password"
-      matInput ngModel password required
-      #passwordInput="ngModel"
-      minlength="6"
-      >
-      <mat-hint align="end">{{passwordInput.value?.length}}/6</mat-hint>
+      <input
+        type="password"
+        name="password"
+        placeholder="Your password"
+        matInput
+        ngModel
+        password
+        required
+        #passwordInput="ngModel"
+        minlength="6"
+      />
+      <mat-hint align="end">{{ passwordInput.value?.length }}/6</mat-hint>
       <mat-error>Password cannot be less than 6 characters</mat-error>
     </mat-form-field>
 
-    <button mat-raised-button type="submit" color="primary" [disabled]="f.invalid">Login</button>
+    <button
+      mat-raised-button
+      type="submit"
+      color="primary"
+      [disabled]="f.invalid"
+      *ngIf="!isLoading"
+    >
+      Login
+    </button>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
   </form>
 </section>

@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,8 @@ export class AuthService {
     private router: Router,
     private afAuth: AngularFireAuth,
     private trainingService: TrainingService,
-    private matSnackBar: MatSnackBar
+    private matSnackBar: MatSnackBar,
+    private uiService: UIService
   ) {}
 
   /**
@@ -50,12 +52,17 @@ export class AuthService {
    * @param authData
    */
   registerUser(authData: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
     this.afAuth.auth
       .createUserAndRetrieveDataWithEmailAndPassword(
         authData.email,
         authData.password
       )
+      .then(result => {
+        this.uiService.loadingStateChanged.next(false);
+      })
       .catch(error => {
+        this.uiService.loadingStateChanged.next(false);
         // Show error message in snackbar
         this.matSnackBar.open(error.message, null, {
           duration: 3000
@@ -69,9 +76,14 @@ export class AuthService {
    * @param authData
    */
   login(authData: AuthData) {
+    this.uiService.loadingStateChanged.next(true);
     this.afAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
+      .then(result => {
+        this.uiService.loadingStateChanged.next(false);
+      })
       .catch(error => {
+        this.uiService.loadingStateChanged.next(false);
         // Show error message in snackbar
         this.matSnackBar.open(error.message, null, {
           duration: 3000
