@@ -1,9 +1,9 @@
-import { AuthService } from './../auth/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subject, Subscription } from 'rxjs';
 import { Exercise } from './exercise.model';
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
+import { UIService } from '../shared/ui.service';
 
 @Injectable()
 export class TrainingService {
@@ -15,7 +15,7 @@ export class TrainingService {
   private ongoingExercise: Exercise;
   private availableExercises: Exercise[] = [];
 
-  constructor(private db: AngularFirestore) { }
+  constructor(private db: AngularFirestore, private uiService: UIService) {}
 
   /**
    * Subscribe to snapShot changes. Whenever database changes, this will be invoked.
@@ -26,23 +26,38 @@ export class TrainingService {
    * have updated, whic is subscribed by new training to show drop down menu.
    */
   getAvailableTrainings() {
-    this.firebaseSubscriptions.push(this.db
-      .collection('availableExercises')
-      .snapshotChanges()
-      .pipe(
-        map(resultArray => {
-          return resultArray.map(doc => {
-            return {
-              id: doc.payload.doc.id,
-              ...doc.payload.doc.data()
-            };
-          });
-        })
-      )
-      .subscribe((result: Exercise[]) => {
-        this.availableExercises = result;
-        this.availableExercisesChanged.next(result);
-      }));
+    this.uiService.loadingStateChanged.next(true);
+    this.firebaseSubscriptions.push(
+      this.db
+        .collection('availableExercises')
+        .snapshotChanges()
+        .pipe(
+          map(resultArray => {
+            return resultArray.map(doc => {
+              return {
+                id: doc.payload.doc.id,
+                ...doc.payload.doc.data()
+              };
+            });
+          })
+        )
+        .subscribe(
+          (result: Exercise[]) => {
+            this.uiService.loadingStateChanged.next(false);
+            this.availableExercises = result;
+            this.availableExercisesChanged.next(result);
+          },
+          error => {
+            this.uiService.loadingStateChanged.next(false);
+            this.uiService.showMatSnackBar(
+              'Loading exercises failed, please try again later',
+              null,
+              3000
+            );
+            this.availableExercisesChanged.next(null);
+          }
+        )
+    );
   }
 
   getOngoingExercise() {
@@ -101,12 +116,14 @@ export class TrainingService {
    * It is pastTrainingsChanged is subscribed by past training components to show data in a datatable.
    */
   fetchPastTrainingsFromDB() {
-    this.firebaseSubscriptions.push(this.db
-      .collection('pastTrainings')
-      .valueChanges()
-      .subscribe((result: Exercise[]) => {
-        this.pastTrainingsChanged.next(result);
-      }));
+    this.firebaseSubscriptions.push(
+      this.db
+        .collection('pastTrainings')
+        .valueChanges()
+        .subscribe((result: Exercise[]) => {
+          this.pastTrainingsChanged.next(result);
+        })
+    );
   }
 
   /**
