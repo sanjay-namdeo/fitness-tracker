@@ -7,49 +7,79 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthService {
-  public authChange = new Subject<boolean>();
-  private isAuthenticated = false;
+  public authChange = new Subject<boolean>(); // To store authChange Subject, which is subscribed by header and sidebar
+  private isAuthenticated = false; // To store logged in status
 
-  constructor(private router: Router, private afAuth: AngularFireAuth, private trainingService: TrainingService) {}
+  /**
+   * Constructor injecting 3 different services
+   * @param router
+   * @param afAuth
+   * @param trainingService
+   */
+  constructor(
+    private router: Router,
+    private afAuth: AngularFireAuth,
+    private trainingService: TrainingService
+  ) {}
 
+  /**
+   * Attach a listner to authChange subscription. This method is called once in app component.
+   * authChange invokes all observers whenever user login status changes. If user object is not null
+   * that means, user is logged in. Otherwise user logged of.
+   */
+  initAuthListner() {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.isAuthenticated = true;
+        this.authChange.next(true); // Inform header and sidebar that user is logged in and show only training and logout menus
+        this.router.navigate(['/training']);
+      } else {
+        this.trainingService.onLogoutCancelSubscription();
+        this.isAuthenticated = false;
+        this.authChange.next(false); // Inform header and sidebar that user is logged out and show only login and signup menus
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  /**
+   * Register a user with a valid email and a valid passowrd. It will invoke authChange observer,
+   * as authStatus changes.
+   * @param authData
+   */
   registerUser(authData: AuthData) {
-    this.afAuth.auth
-      .createUserAndRetrieveDataWithEmailAndPassword(
-        authData.email,
-        authData.password
-      )
-      .then(result => {
-        this.authSuccess();
-      }).catch((error) => {
-        this.logout();
-      });
+    this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
+      authData.email,
+      authData.password
+    );
   }
 
+  /**
+   * Login a previously registered user with email and password. It will invoke authChange observer,
+   * as authStatus changes.
+   * @param authData
+   */
   login(authData: AuthData) {
-    this.afAuth.auth
-      .signInWithEmailAndPassword(authData.email, authData.password)
-      .then(result => {
-        this.authSuccess();
-      }).catch((error) => {
-        this.logout();
-      });
+    this.afAuth.auth.signInWithEmailAndPassword(
+      authData.email,
+      authData.password
+    );
   }
 
+  /**
+   * Logout the currently logged in user. It will invoke authChange observer,
+   * as authStatus changes.
+   */
   logout() {
-    this.trainingService.onLogoutCancelSubscription();
-    this.isAuthenticated = false;
-    this.authChange.next(false);
-    this.router.navigate(['/login']);
     this.afAuth.auth.signOut();
   }
 
-  isAuth() {
-    return this.isAuthenticated;
-  }
 
-  authSuccess() {
-    this.isAuthenticated = true;
-    this.authChange.next(true);
-    this.router.navigate(['/training']);
+  /**
+   * If user is logged in then return true elase false.
+   * @returns boolean
+   */
+  isAuth(): boolean {
+    return this.isAuthenticated;
   }
 }
