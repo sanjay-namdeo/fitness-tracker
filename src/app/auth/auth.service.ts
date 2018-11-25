@@ -4,6 +4,7 @@ import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class AuthService {
@@ -19,7 +20,8 @@ export class AuthService {
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
-    private trainingService: TrainingService
+    private trainingService: TrainingService,
+    private matSnackBar: MatSnackBar
   ) {}
 
   /**
@@ -48,10 +50,17 @@ export class AuthService {
    * @param authData
    */
   registerUser(authData: AuthData) {
-    this.afAuth.auth.createUserAndRetrieveDataWithEmailAndPassword(
-      authData.email,
-      authData.password
-    );
+    this.afAuth.auth
+      .createUserAndRetrieveDataWithEmailAndPassword(
+        authData.email,
+        authData.password
+      )
+      .catch(error => {
+        // Show error message in snackbar
+        this.matSnackBar.open(error.message, null, {
+          duration: 3000
+        });
+      });
   }
 
   /**
@@ -60,10 +69,14 @@ export class AuthService {
    * @param authData
    */
   login(authData: AuthData) {
-    this.afAuth.auth.signInWithEmailAndPassword(
-      authData.email,
-      authData.password
-    );
+    this.afAuth.auth
+      .signInWithEmailAndPassword(authData.email, authData.password)
+      .catch(error => {
+        // Show error message in snackbar
+        this.matSnackBar.open(error.message, null, {
+          duration: 3000
+        });
+      });
   }
 
   /**
@@ -73,7 +86,6 @@ export class AuthService {
   logout() {
     this.afAuth.auth.signOut();
   }
-
 
   /**
    * If user is logged in then return true elase false.
