@@ -63,10 +63,8 @@ export class AuthService {
       })
       .catch(error => {
         this.uiService.loadingStateChanged.next(false);
-        // Show error message in snackbar
-        this.matSnackBar.open(error.message, null, {
-          duration: 3000
-        });
+        // Show error message in snackbar, moved to ui service for reusability
+        this.uiService.showMatSnackBar(error.message, null, 3000);
       });
   }
 
@@ -84,10 +82,8 @@ export class AuthService {
       })
       .catch(error => {
         this.uiService.loadingStateChanged.next(false);
-        // Show error message in snackbar
-        this.matSnackBar.open(error.message, null, {
-          duration: 3000
-        });
+        // Show error message in snackbar, moved to ui service for reusability
+        this.uiService.showMatSnackBar(error.message, null, 3000);
       });
   }
 
