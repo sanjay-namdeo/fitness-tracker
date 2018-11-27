@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFirestore } from '@angular/fire/firestore';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -12,8 +13,7 @@ import { MaterialModule } from './material.module';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { UIService } from './shared/ui.service';
-import { StopTrainingComponent } from './training/current-training/stop-training.component';
-import { TrainingModule } from './training/training.module';
+import { TrainingService } from './training/training.service';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
@@ -30,11 +30,9 @@ import { WelcomeComponent } from './welcome/welcome.component';
     AngularFireModule.initializeApp(environment.firebase),
     MaterialModule,
     AppRoutingModule,
-    AuthModule,
-    TrainingModule
+    AuthModule
   ],
-  providers: [UIService],
-  bootstrap: [AppComponent],
-  entryComponents: [StopTrainingComponent]
+  providers: [UIService, TrainingService, AngularFirestore],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
