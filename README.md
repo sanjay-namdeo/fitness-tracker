@@ -18,11 +18,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 <br/>
 <p align="center">
   <img src="screenshots/progress.png" width="350" title="hover text">
-  
-</p>
-<br/>
-<p align="center">
   <img src="screenshots/completed.png" width="350" alt="accessibility text">
-  <img src="screenshots/navigation.png" width="350" title="hover text">
 </p>
 
